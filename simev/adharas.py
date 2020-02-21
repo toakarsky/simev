@@ -29,23 +29,25 @@ class Adharas:
                 self.updateDay()
         
         def updateNight(self):
+            print('_WORLD_EVENT_PUSHED NIGHT_BEGAN')
             self.isNight = True
         
         def updateDay(self):
+            print('_WORLD_EVENT_PUSHED DAY_BEGAN')
             self.isNight = False
             self.currentFrame = 0
             self.currentTick = 0
         
         def renderTime(self, renderScreen):
             timeText = self.timeFont.render(str(self.currentTick) + '_' + str(self.currentFrame) + ':' + str(self.isNight), True, (255, 255, 255))
-            renderScreen.blit(timeText, (20, 20))
-        
-        # def updateNight(self):
-            
-        # def updateDay(self):
-        #     self.currentTick = 0
-        #     self.framesPassed = 0
-            
+            if self.isNight:
+                # TODO:
+                # Make this not retarded
+                nightSky = pygame.Surface(WINDOW_SIZE)
+                nightSky.set_alpha(64)
+                nightSky.fill((36, 50, 64))
+                renderScreen.blit(nightSky, (0, 0))
+            renderScreen.blit(timeText, (20, 20))            
     
     class Block(pygame.sprite.Sprite):      
         def __init__(self, blockCoords, spritePath):
@@ -97,6 +99,7 @@ class Adharas:
                 
     def startSimulation(self):
         self.naturalClock = self.NaturalClock()
+        self.naturalClock.updateDay()
     
     def updateWorld(self):
         self.blockSpriteGroup.update() 
