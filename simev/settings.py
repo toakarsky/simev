@@ -6,4 +6,4 @@ FONT_PATH = 'assets/fonts/cascadia.ttf'
 
 # TODO:
 #   Think of a better name for blocks in Adharas(They are all squares)
-BLOCK_SIZE = 32
+BLOCK_SIZE = 64

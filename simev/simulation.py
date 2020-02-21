@@ -20,7 +20,8 @@ class Simulation:
         self.clock = pygame.time.Clock()
         
         # initialize Adharas
-        self.adharas = Adharas()
+        self.spritesGroup = pygame.sprite.Group()
+        self.adharas = Adharas(self.spritesGroup)
 
         self.runMenuScreen()
         if self.simulate:
@@ -65,7 +66,9 @@ class Simulation:
 
             self.renderScreen.fill((0, 0, 0))
             # render everything
-            self.adharas.render(self.renderScreen)
+            self.spritesGroup.update()
+            self.spritesGroup.draw(self.renderScreen)
+            # self.adharas.render(self.renderScreen)
             self.renderScreen.blit(titleTextShadow, titleTextShadowPos)
             self.renderScreen.blit(titleText, titleTextPos)
 
