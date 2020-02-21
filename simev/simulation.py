@@ -20,8 +20,7 @@ class Simulation:
         self.clock = pygame.time.Clock()
         
         # initialize Adharas
-        self.spritesGroup = pygame.sprite.Group()
-        self.adharas = Adharas(self.spritesGroup)
+        self.adharas = Adharas()
 
         self.runMenuScreen()
         if self.simulate:
@@ -64,11 +63,12 @@ class Simulation:
             else:
                 runSimButtonColor = (255, 255, 255)
 
-            self.renderScreen.fill((0, 0, 0))
+            # calculate everything
+            self.adharas.updateWorld()
+
             # render everything
-            self.spritesGroup.update()
-            self.spritesGroup.draw(self.renderScreen)
-            # self.adharas.render(self.renderScreen)
+            self.renderScreen.fill((0, 0, 0))
+            self.adharas.renderWorld(self.renderScreen)
             self.renderScreen.blit(titleTextShadow, titleTextShadowPos)
             self.renderScreen.blit(titleText, titleTextPos)
 
@@ -81,6 +81,7 @@ class Simulation:
 
     def runMainLoop(self):
         print('*SIMULATION STARTED')
+        self.adharas.startSimulation()
         while self.shutdown == False:
             # looping over every input
             for event in pygame.event.get():
@@ -89,9 +90,11 @@ class Simulation:
                     self.shutdown = True
 
             # calculate everything
+            self.adharas.updateWorld()
 
             # render everything
             self.renderScreen.fill((0, 0, 0))
+            self.adharas.renderWorld(self.renderScreen)
 
             # flip everything
             pygame.display.update()
