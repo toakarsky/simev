@@ -18,8 +18,11 @@ python ./simev.py
 # Let's say this is a design description part of README
 ## Window
 ## Adharas
+Class responsible for keeping track and updating everything in the world of Adharas.
 ### NaturalClock
 NaturalClock is the class responsible for keeping track of current time on the Adharas. One day should take 16 ticks and night(procreation) should take 1 tick. 1 tick should be about 0.5s or 30frames for 60fps.
+## Dian
+Class representing a single creature living in the world of Adharas. A Dian.
 
 # Attributions
 Window icon by [flaticon](https://www.flaticon.com)

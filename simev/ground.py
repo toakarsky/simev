@@ -1,6 +1,8 @@
+import random
+
 import pygame
 
-from .settings import WINDOW_SIZE, GROUND_BLOCK_SIZE, GROUND_POSITION_TO_TYPE, GROUND_TYPE_TO_IMAGE
+from .settings import WINDOW_SIZE, GROUND_BLOCK_SIZE, GROUND_POSITION_TO_TYPE, GROUND_TYPE_TO_IMAGE_PATH
 
 
 class Ground:
@@ -9,7 +11,9 @@ class Ground:
             self.id = id
             self.type = type
             self.rect = rect
-            self.image = pygame.image.load(GROUND_TYPE_TO_IMAGE[self.type])
+            self.image = pygame.image.load(GROUND_TYPE_TO_IMAGE_PATH[self.type]).convert_alpha()
+            
+            self.inhabitet = False
 
         def render(self, renderScreen):
             renderScreen.blit(self.image, self.rect)
@@ -29,7 +33,10 @@ class Ground:
                     groundBlockCount[0] - 1) else 1, 0 if y == 0 else -1 if y == (groundBlockCount[1] - 1) else 1)
                 self.groundBlocksList.append(self.GroundBlock(len(
                     self.groundBlocksList), GROUND_POSITION_TO_TYPE[currentBlockPos2Type], currentBlockPos))
-
+    
     def render(self, renderScreen):
         for groundBlock in self.groundBlocksList:
             groundBlock.render(renderScreen)
+            
+    def getRandomGroundBlock(self):
+        return random.choice(self.groundBlocksList)

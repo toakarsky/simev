@@ -33,7 +33,7 @@ GROUND_POSITION_TO_TYPE = {
     (1, 1): GROUND_BLOCK_TYPE_ENUM.MIDDLE_BLOCK,
 }
 
-GROUND_TYPE_TO_IMAGE = {
+GROUND_TYPE_TO_IMAGE_PATH = {
     GROUND_BLOCK_TYPE_ENUM.TOP_LEFT_BLOCK: 'assets/sprites/grass/topLeft.png',
     GROUND_BLOCK_TYPE_ENUM.TOP_RIGHT_BLOCK: 'assets/sprites/grass/topRight.png',
     GROUND_BLOCK_TYPE_ENUM.TOP_BLOCK: 'assets/sprites/grass/top.png',
@@ -47,3 +47,8 @@ GROUND_TYPE_TO_IMAGE = {
 
 TICKS_PER_DAY = 11
 FRAMES_PER_TICK = 30
+
+DIAN_IDLE_IMAGE_PATH = 'assets/sprites/dian/idle.png'
+DIAN_SLEEP_IMAGE_PATH = 'assets/sprites/dian/sleep.png'
+
+DIAN_MOVE_SPEED = 4
