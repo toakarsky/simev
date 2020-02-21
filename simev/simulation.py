@@ -16,9 +16,9 @@ class Simulation:
         pygame.display.set_caption(WINDOW_TITLE)
         self.icon = pygame.image.load(WINDOW_ICON_PATH)
         pygame.display.set_icon(self.icon)
-        
+
         self.clock = pygame.time.Clock()
-        
+
         # initialize Adharas
         self.adharas = Adharas()
 
