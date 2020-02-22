@@ -91,7 +91,8 @@ class Simulation:
                     print('_EVENT_GOT__ QUIT')
                     self.shutdown = True
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    print('_EVENT_GOT__ PAUSE' if paused == False else '_EVENT_GOT__ UNPAUSE')
+                    print('_EVENT_GOT__ PAUSE' if paused ==
+                          False else '_EVENT_GOT__ UNPAUSE')
                     paused = paused == False
                 if event.type == pygame.MOUSEMOTION and paused == True and pygame.mouse.get_focused():
                     renderHoverInfo = True

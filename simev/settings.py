@@ -1,17 +1,21 @@
 import enum
 
-WINDOW_SIZE = (800, 800)
+WINDOW_SIZE = (640, 640)
 WINDOW_TITLE = 'SimEnv - Simple Evolution Simulation'
 WINDOW_ICON_PATH = 'assets/icons/simenv.png'
 
 FONT_PATH = 'assets/fonts/cascadia.ttf'
 
 DEBUG_INFO_FONT_SIZE = 16
+
+
 class HOVER_BY_CLASS_WEIGHT_ENUM(enum.IntEnum):
     GROUND_BLOCK = 0
     DIAN = 1
 
+
 GROUND_BLOCK_SIZE = 32
+FOOD_SIZE = GROUND_BLOCK_SIZE / 2
 
 
 class GROUND_BLOCK_TYPE_ENUM(enum.Enum):
@@ -50,11 +54,13 @@ GROUND_TYPE_TO_IMAGE_PATH = {
     GROUND_BLOCK_TYPE_ENUM.MIDDLE_BLOCK: 'assets/sprites/grass/middle.png',
 }
 
+SPEED_FACTOR = 1
+
 FPS_LIMIT = 60
-TICKS_PER_DAY = 11
-FRAMES_PER_TICK = 30
-STARTING_POPULATATION_SIZE = 11
+TICKS_PER_DAY = int(11 / SPEED_FACTOR)
+FRAMES_PER_TICK = int(30 / SPEED_FACTOR)
+STARTING_POPULATATION_SIZE = 10
 
 DIAN_IDLE_IMAGE_PATH = 'assets/sprites/dian/idle.png'
 DIAN_SLEEP_IMAGE_PATH = 'assets/sprites/dian/sleep.png'
-DIAN_MOVE_SPEED = 60 / TICKS_PER_DAY
+DIAN_MOVE_SPEED = (60 / TICKS_PER_DAY) * SPEED_FACTOR

@@ -11,12 +11,12 @@ from .ground import Ground
 from .dian import Dian, DIAN_EVENTS_ENUM
 
 
-class Adharas:  
+class Adharas:
     class NaturalClock():
         class NATURAL_CLOCK_EVENTS_ENUM(enum.Enum):
             NIGHT = 0
             DAY = 1
-        
+
         def __init__(self, EVENT_LOOP):
             self.currentTick = 0
             self.currentFrame = 0
@@ -54,8 +54,9 @@ class Adharas:
                 str(self.currentTick) + '_' + str(self.currentFrame),
                 str("NIGHT" if self.isNight else "DAY"),
             ]
-            d = DebugInfo(renderScreen, timeTexts, DEBUG_INFO_POS_ENUM.TOP_LEFT)
-            
+            d = DebugInfo(renderScreen, timeTexts,
+                          DEBUG_INFO_POS_ENUM.TOP_LEFT)
+
             if self.isNight:
                 # TODO:
                 # Make this not retarded
@@ -67,45 +68,47 @@ class Adharas:
     class EVENT_LOOP:
         def __init__(self):
             self.loop = []
-        
+
         def append(self, val):
             self.loop.append(val)
-        
+
         def clear(self):
             self.loop = []
-        
+
         def get(self):
             return self.loop
 
     def __init__(self):
         self.hoverObjectsList = HoveredObjectsList()
-        
+
         self.NATURAL_CLOCK_EVENT_LOOP = self.EVENT_LOOP()
         self.naturalClock = None
-        
+
         self.GROUND_EVENT_LOOP = self.EVENT_LOOP()
         self.ground = Ground(self.GROUND_EVENT_LOOP)
-        
+
         self.dianPopulation = []
         self.DIAN_EVENT_LOOP = self.EVENT_LOOP()
-        
+
         self.dayCount = -1
 
     def startSimulation(self):
         self.naturalClock = self.NaturalClock(self.NATURAL_CLOCK_EVENT_LOOP)
         self.naturalClock.updateDay()
-        
+
         self.generateStartingPopulation(STARTING_POPULATATION_SIZE)
 
     def generateStartingPopulation(self, populationSize):
-        populationSize = min(len(self.ground.inhabitableGroundBlocks), populationSize)
+        populationSize = min(
+            len(self.ground.inhabitableGroundBlocks), populationSize)
         self.ground.update()
         for dianID in range(populationSize):
-            self.dianPopulation.append(Dian(dianID, self.ground.getGroundBlockByID(self.ground.inhabitableGroundBlocks.pop(random.randrange(len(self.ground.inhabitableGroundBlocks)))), self.DIAN_EVENT_LOOP))            
+            self.dianPopulation.append(Dian(dianID, self.ground.getGroundBlockByID(self.ground.inhabitableGroundBlocks.pop(
+                random.randrange(len(self.ground.inhabitableGroundBlocks)))), self.DIAN_EVENT_LOOP))
 
     def renderHoverInformation(self, renderScreen):
         self.hoverObjectsList.getHoveredObjectInfo(renderScreen)
-       
+
     def getHoverInformation(self):
         self.hoverObjectsList.clear()
         for groundBlock in self.ground.groundBlocksList:
@@ -116,32 +119,47 @@ class Adharas:
             if dian.collidepoint(pygame.mouse.get_pos()):
                 print(f'__HOVERING DIAN ID={dian.id}')
                 self.hoverObjectsList.append(dian)
-                
+
+    def updateDianDestination(self, dian):
+        getFoodWithScent = self.ground.searchForFoodScent(dian)
+        print(f'*DIAN FOOD SMELLED = {getFoodWithScent} DIAN_ID={dian.id}')
+        if getFoodWithScent == None:
+            dian.setDestination(self.ground.getRandomGroundBlock())
+        else:
+            dian.setDestination(getFoodWithScent.homeGroundBlock)
+
     def updateWorld(self):
         if self.naturalClock == None:
             return
-        
+
         self.naturalClock.updateFrame()
-        
+
         for ncevent in self.NATURAL_CLOCK_EVENT_LOOP.get():
             if ncevent == self.NaturalClock.NATURAL_CLOCK_EVENTS_ENUM.NIGHT:
                 print('_NATURAL_CLOCK_EVENT NIGTH_BEGAN')
+                self.ground.removeFood()
                 for dian in self.dianPopulation:
                     dian.sleep()
             if ncevent == self.NaturalClock.NATURAL_CLOCK_EVENTS_ENUM.DAY:
                 print('_NATURAL_CLOCK_EVENT DAY_BEGAN')
+                self.ground.growFood()
                 self.dayCount += 1
                 for dian in self.dianPopulation:
                     dian.awake()
         self.NATURAL_CLOCK_EVENT_LOOP.clear()
-        
+
         if self.naturalClock.isNight == False:
             self.ground.update()
-        
+
         for devent in self.DIAN_EVENT_LOOP.get():
             if devent[0] == DIAN_EVENTS_ENUM.NEEDS_DESTINATION:
                 print(f'_DIAN_EVENT NEEDS_DESTINATION DIAN_ID={devent[1]}')
-                self.dianPopulation[devent[1]].setDestination(self.ground.getRandomGroundBlock())
+                self.updateDianDestination(self.dianPopulation[devent[1]])
+            if devent[0] == DIAN_EVENTS_ENUM.SMELLING:
+                smelledFood = self.ground.searchForFoodScent(self.dianPopulation[devent[1]])
+                if smelledFood != None:
+                    self.dianPopulation[devent[1]].setDestination(smelledFood.homeGroundBlock)
+                    
         self.DIAN_EVENT_LOOP.clear()
         for dian in self.dianPopulation:
             dian.update()
@@ -162,4 +180,3 @@ class Adharas:
             dian.render(renderScreen)
         self.naturalClock.renderTime(renderScreen)
         self.renderInfo(renderScreen)
-        
