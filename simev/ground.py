@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from .settings import WINDOW_SIZE
+from .settings import WINDOW_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM
 from .settings import GROUND_BLOCK_SIZE, GROUND_BLOCK_TYPE_ENUM, GROUND_POSITION_TO_TYPE, GROUND_TYPE_TO_IMAGE_PATH
 
 
@@ -24,13 +24,33 @@ class Ground:
             
             self.fertility = 0 if self.inhabitable == True else random.random()
             self.food = None
+        
+        def __int__(self):
+            return HOVER_BY_CLASS_WEIGHT_ENUM.GROUND_BLOCK
+
+        def collidepoint(self, point):
+            if self.rect[0] > point[0]:
+                return False
+            if self.rect[1] > point[1]:
+                return False
+            if self.rect[0] + GROUND_BLOCK_SIZE > point[0] and self.rect[1] + GROUND_BLOCK_SIZE > point[1]:
+                return True
+            return False
 
         def render(self, renderScreen):
             if self.inhabitet:
-                pygame.draw.rect(renderScreen, (255, 0, 0), (self.rect, (32, 32)))
+                pygame.draw.rect(renderScreen, (255, 0, 0), (self.rect, (GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE)))
             else:
                 renderScreen.blit(self.image, self.rect)
-
+                    
+        def getDebugInfo(self):
+            return [
+                'GROUND ID: ' + str(self.id),
+                'INHABITABLE: ' + str(self.inhabitable) + ' INHABITET: ' + str(self.inhabitet),
+                'RECT: ' + str(self.rect) + ' MOUSE: ' + str(pygame.mouse.get_pos()),
+                'FERTILITY: ' + str(self.fertility),
+            ]
+            
     def __init__(self, EVENT_LOOP):
         self.EVENT_LOOP = EVENT_LOOP
         

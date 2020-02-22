@@ -3,7 +3,7 @@ import random
 
 import pygame
 
-from .settings import GROUND_BLOCK_SIZE
+from .settings import GROUND_BLOCK_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM
 from .settings import DIAN_IDLE_IMAGE_PATH, DIAN_SLEEP_IMAGE_PATH, DIAN_MOVE_SPEED
 
 
@@ -20,6 +20,9 @@ class Dian:
         SLEEP = 0
         IDLE = 1
 
+    def __int__(self):
+        return int(HOVER_BY_CLASS_WEIGHT_ENUM.DIAN)
+    
     def __init__(self, id, homeGroundBlock, EVENT_LOOP):
         self.id = id
         self.IDLE_SPRITE = pygame.image.load(
@@ -46,6 +49,22 @@ class Dian:
     
     def __del__(self):
         self.homeGroundBlock.inhabitet = False
+    
+    def collidepoint(self, point):
+        if self.coords[0] > point[0]:
+            return False
+        if self.coords[1] > point[1]:
+            return False
+        if self.coords[0] + self.IDLE_SPRITE.get_width() > point[0] and self.coords[1] + self.IDLE_SPRITE.get_height() > point[1]:
+            return True
+        return False
+
+    def getDebugInfo(self):
+            return [
+                'DIAN ID: ' + str(self.id),
+                'COORDS: ' + str((int(self.coords[0]), int(self.coords[1]))) + ' MOUSE: ' + str(pygame.mouse.get_pos()),
+                'STATE: ' + str(self.state),
+            ]
 
     def sleep(self):
         self.coords = (self.homeGroundBlock.rect[0]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(

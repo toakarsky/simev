@@ -5,7 +5,7 @@ very very very simple evolution simulator written in Python
 This is my pet project. Bored by my day-to-day office work as a programmer I'd like to finally create something that can enable me to express some sort of creativity. Thus I decided to create this small simulation of small creatures called Dains who compete for food between themself on their tiny 2D world of Adharas.
 
 # How to run it
-For now there is nothing there so to run you just have to install pygame(and Python v>=3.7)
+For now there isn't much there so to run you just have to install pygame(and Python v>=3.7)
 ```
 pip install -r requirements.txt
 ```
@@ -14,6 +14,8 @@ Then just run it with
 ```
 python ./simev.py
 ```
+
+You can pause the world with ```SPACEBASE``` and while paused It shows some information about hovered object.
 
 # Let's say this is a design description part of README
 ## Window

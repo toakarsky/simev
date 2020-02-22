@@ -82,6 +82,7 @@ class Simulation:
     def runMainLoop(self):
         print('*SIMULATION STARTED')
         paused = False
+        renderHoverInfo = False
         self.adharas.startSimulation()
         while self.shutdown == False:
             # looping over every input
@@ -92,14 +93,21 @@ class Simulation:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     print('_EVENT_GOT__ PAUSE' if paused == False else '_EVENT_GOT__ UNPAUSE')
                     paused = paused == False
+                if event.type == pygame.MOUSEMOTION and paused == True and pygame.mouse.get_focused():
+                    renderHoverInfo = True
+                    self.adharas.getHoverInformation()
 
             # calculate everything
             if paused == False:
+                renderHoverInfo = False
                 self.adharas.updateWorld()
 
             # render everything
             self.renderScreen.fill((0, 0, 0))
             self.adharas.renderWorld(self.renderScreen)
+
+            if renderHoverInfo:
+                self.adharas.renderHoverInformation(self.renderScreen)
 
             # flip everything
             pygame.display.update()

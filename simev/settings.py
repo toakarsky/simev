@@ -5,7 +5,11 @@ WINDOW_TITLE = 'SimEnv - Simple Evolution Simulation'
 WINDOW_ICON_PATH = 'assets/icons/simenv.png'
 
 FONT_PATH = 'assets/fonts/cascadia.ttf'
+
 DEBUG_INFO_FONT_SIZE = 16
+class HOVER_BY_CLASS_WEIGHT_ENUM(enum.IntEnum):
+    GROUND_BLOCK = 0
+    DIAN = 1
 
 GROUND_BLOCK_SIZE = 32
 

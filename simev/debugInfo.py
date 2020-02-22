@@ -11,9 +11,27 @@ class DEBUG_INFO_POS_ENUM(enum.Enum):
     BOTTOM_LEFT = 2
     BOTTOM_RIGHT = 3
 
+class HoveredObjectsList:
+    def __init__(self):
+        self.hoveredObjects = []
+    
+    def append(self, object):
+        self.hoveredObjects.append(object)
+        self.hoveredObjects = sorted(self.hoveredObjects, key=lambda x : int(x))
+        
+    def clear(self):
+        self.hoveredObjects = []
+    
+    def getHoveredObjectInfo(self, renderScreen):
+        if self.hoveredObjects:
+            d = DebugInfo(renderScreen, self.hoveredObjects[-1].getDebugInfo(), DEBUG_INFO_POS_ENUM.BOTTOM_RIGHT)
+            
 
 class DebugInfo:
     def __init__(self, renderScreen, debugInfoTextStrs, position):
+        if debugInfoTextStrs == []:
+            return
+        
         debugFont = pygame.font.Font(FONT_PATH, DEBUG_INFO_FONT_SIZE)
         debugInfoTexts = []
         

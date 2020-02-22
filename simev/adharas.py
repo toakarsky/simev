@@ -6,7 +6,7 @@ import pygame
 from .settings import WINDOW_SIZE, FONT_PATH
 from .settings import TICKS_PER_DAY, FRAMES_PER_TICK, STARTING_POPULATATION_SIZE
 
-from .debugInfo import DebugInfo, DEBUG_INFO_POS_ENUM
+from .debugInfo import DebugInfo, HoveredObjectsList, DEBUG_INFO_POS_ENUM
 from .ground import Ground
 from .dian import Dian, DIAN_EVENTS_ENUM
 
@@ -78,6 +78,8 @@ class Adharas:
             return self.loop
 
     def __init__(self):
+        self.hoverObjectsList = HoveredObjectsList()
+        
         self.NATURAL_CLOCK_EVENT_LOOP = self.EVENT_LOOP()
         self.naturalClock = None
         
@@ -101,6 +103,20 @@ class Adharas:
         for dianID in range(populationSize):
             self.dianPopulation.append(Dian(dianID, self.ground.getGroundBlockByID(self.ground.inhabitableGroundBlocks.pop(random.randrange(len(self.ground.inhabitableGroundBlocks)))), self.DIAN_EVENT_LOOP))            
 
+    def renderHoverInformation(self, renderScreen):
+        self.hoverObjectsList.getHoveredObjectInfo(renderScreen)
+       
+    def getHoverInformation(self):
+        self.hoverObjectsList.clear()
+        for groundBlock in self.ground.groundBlocksList:
+            if groundBlock.collidepoint(pygame.mouse.get_pos()):
+                print(f'__HOVERING GROUNDBLOCK ID={groundBlock.id}')
+                self.hoverObjectsList.append(groundBlock)
+        for dian in self.dianPopulation:
+            if dian.collidepoint(pygame.mouse.get_pos()):
+                print(f'__HOVERING DIAN ID={dian.id}')
+                self.hoverObjectsList.append(dian)
+                
     def updateWorld(self):
         if self.naturalClock == None:
             return
@@ -136,7 +152,6 @@ class Adharas:
             'DAYN: ' + str(self.dayCount),
         ]
         d = DebugInfo(renderScreen, infoStrs, DEBUG_INFO_POS_ENUM.TOP_RIGHT)
-        
 
     def renderWorld(self, renderScreen):
         self.ground.render(renderScreen)
