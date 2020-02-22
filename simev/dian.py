@@ -29,8 +29,8 @@ class Dian:
         self.state = self.DIAN_STATES.IDLE
         self.homeGroundBlock = homeGroundBlock
 
-        self.coords = (self.homeGroundBlock.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_width(
-        ) / 2, self.homeGroundBlock.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_height() / 2)
+        self.coords = (self.homeGroundBlock.rect[1]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
+        )) / 2, self.homeGroundBlock.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
         print(
             f'*DIAN_CREATED HOME_ID={self.homeGroundBlock.id} COORDS={self.coords}')
 
@@ -39,8 +39,8 @@ class Dian:
         self.searchingForDestination = False
 
     def sleep(self):
-        self.coords = (self.homeGroundBlock.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_width(
-        ) / 2, self.homeGroundBlock.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_height() / 2)
+        self.coords = (self.homeGroundBlock.rect[1]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
+        )) / 2, self.homeGroundBlock.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
         self.state = self.DIAN_STATES.SLEEP
         self.destination = None
         self.destCoords = None
@@ -57,8 +57,8 @@ class Dian:
     def setDestination(self, destinationGroundBlock):
         self.destination = destinationGroundBlock
         
-        self.destCoords = (self.destination.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_width(
-        ) / 2, self.destination.rect[1] + GROUND_BLOCK_SIZE / 2 + self.IDLE_SPRITE.get_height() / 2)
+        self.destCoords = (self.destination.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_width(
+        )) / 2, self.destination.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
 
         self.searchingForDestination = False
 
