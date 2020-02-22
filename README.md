@@ -15,7 +15,7 @@ Then just run it with
 python ./simev.py
 ```
 
-You can pause the world with ```SPACEBASE``` and while paused It shows some information about hovered object.
+You can pause the world with ```SPACEBAR``` and while paused It shows some information about hovered object.
 
 # Let's say this is a design description part of README
 ## Window
