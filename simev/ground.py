@@ -59,6 +59,9 @@ class Ground:
     def getRandomGroundBlock(self):
         return random.choice(self.groundBlocksList)
     
+    def getGroundBlockByID(self, id):
+        return self.groundBlocksList[id]
+    
     def getRandomHome(self):
         if self.inhabitableGroundBlocks != []:
             return self.groundBlocksList[random.choice(self.inhabitableGroundBlocks)]

@@ -1,4 +1,5 @@
 import enum
+import random
 
 import pygame
 
@@ -79,14 +80,20 @@ class Adharas:
         self.GROUND_EVENT_LOOP = self.EVENT_LOOP()
         self.ground = Ground(self.GROUND_EVENT_LOOP)
         
-        self.singleDian = None
+        self.dianPopulation = []
         self.DIAN_EVENT_LOOP = self.EVENT_LOOP()
 
     def startSimulation(self):
         self.naturalClock = self.NaturalClock(self.NATURAL_CLOCK_EVENT_LOOP)
         self.naturalClock.updateDay()
         
-        self.singleDian = Dian(self.ground.getRandomHome(), self.DIAN_EVENT_LOOP)
+        self.generateStartingPopulation()
+
+    def generateStartingPopulation(self, populationSize = 10):
+        populationSize = min(len(self.ground.inhabitableGroundBlocks), populationSize)
+        self.ground.update()
+        for dianID in range(populationSize):
+            self.dianPopulation.append(Dian(dianID, self.ground.getGroundBlockByID(self.ground.inhabitableGroundBlocks.pop(random.randrange(len(self.ground.inhabitableGroundBlocks)))), self.DIAN_EVENT_LOOP))            
 
     def updateWorld(self):
         if self.naturalClock == None:
@@ -97,27 +104,29 @@ class Adharas:
         for ncevent in self.NATURAL_CLOCK_EVENT_LOOP.get():
             if ncevent == self.NaturalClock.NATURAL_CLOCK_EVENTS_ENUM.NIGHT:
                 print('_NATURAL_CLOCK_EVENT NIGTH_BEGAN')
-                self.singleDian = Dian(self.ground.getRandomHome(), self.DIAN_EVENT_LOOP)
-                self.singleDian.sleep()
+                for dian in self.dianPopulation:
+                    dian.sleep()
             if ncevent == self.NaturalClock.NATURAL_CLOCK_EVENTS_ENUM.DAY:
                 print('_NATURAL_CLOCK_EVENT DAY_BEGAN')
-                self.singleDian.awake()
+                for dian in self.dianPopulation:
+                    dian.awake()
         self.NATURAL_CLOCK_EVENT_LOOP.clear()
         
         if self.naturalClock.isNight == False:
             self.ground.update()
         
         for devent in self.DIAN_EVENT_LOOP.get():
-            if devent == DIAN_EVENTS_ENUM.NEEDS_DESTINATION:
+            if devent[0] == DIAN_EVENTS_ENUM.NEEDS_DESTINATION:
                 print('_DIAN_EVENT NEEDS_DESTINATION')
-                self.singleDian.setDestination(self.ground.getRandomGroundBlock())
+                self.dianPopulation[devent[1]].setDestination(self.ground.getRandomGroundBlock())
         self.DIAN_EVENT_LOOP.clear()
-        self.singleDian.update()
+        for dian in self.dianPopulation:
+            dian.update()
 
     def renderWorld(self, renderScreen):
         self.ground.render(renderScreen)
         if self.naturalClock != None:
             self.naturalClock.renderTime(renderScreen)
         
-        if self.singleDian != None:
-            self.singleDian.render(renderScreen)
+        for dian in self.dianPopulation:
+            dian.render(renderScreen)

@@ -19,7 +19,8 @@ class Dian:
         SLEEP = 0
         IDLE = 1
 
-    def __init__(self, homeGroundBlock, EVENT_LOOP):
+    def __init__(self, id, homeGroundBlock, EVENT_LOOP):
+        self.id = id
         self.IDLE_SPRITE = pygame.image.load(
             DIAN_IDLE_IMAGE_PATH).convert_alpha()
         self.SLEEP_SPRITE = pygame.image.load(
@@ -55,7 +56,7 @@ class Dian:
         self.searchingForDestination = False
 
     def findDestination(self):
-        self.EVENT_LOOP.append(DIAN_EVENTS_ENUM.NEEDS_DESTINATION)
+        self.EVENT_LOOP.append((DIAN_EVENTS_ENUM.NEEDS_DESTINATION, self.id))
         self.searchingForDestination = True
 
     def setDestination(self, destinationGroundBlock):
