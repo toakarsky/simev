@@ -156,10 +156,12 @@ class Adharas:
                 print(f'_DIAN_EVENT NEEDS_DESTINATION DIAN_ID={devent[1]}')
                 self.updateDianDestination(self.dianPopulation[devent[1]])
             if devent[0] == DIAN_EVENTS_ENUM.SMELLING:
-                smelledFood = self.ground.searchForFoodScent(self.dianPopulation[devent[1]])
+                smelledFood = self.ground.searchForFoodScent(
+                    self.dianPopulation[devent[1]])
                 if smelledFood != None:
-                    self.dianPopulation[devent[1]].setDestination(smelledFood.homeGroundBlock)
-                    
+                    self.dianPopulation[devent[1]].setDestination(
+                        smelledFood.homeGroundBlock)
+
         self.DIAN_EVENT_LOOP.clear()
         for dian in self.dianPopulation:
             dian.update()

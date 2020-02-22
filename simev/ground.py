@@ -12,25 +12,26 @@ class Ground:
             self.id = id
             self.homeGroundBlock = homeGroundBlock
             self.homeGroundBlock.food = self
-            
+
             self.scentValue = random.randint(1, 6)
             self.nutritiousValue = random.randint(1, 6)
-            
+
             MARGIN = (GROUND_BLOCK_SIZE - FOOD_SIZE) / 2
-            self.rect = (self.homeGroundBlock.rect[0] + MARGIN, self.homeGroundBlock.rect[1] + MARGIN)
+            self.rect = (
+                self.homeGroundBlock.rect[0] + MARGIN, self.homeGroundBlock.rect[1] + MARGIN)
 
         def __del__(self):
             self.homeGroundBlock.food = None
-            
+
         def getDebugInfo(self):
             return [
                 'SCENT_VALUE: ' + str(self.scentValue),
                 'NUTRITIOUS_VALUE: ' + str(self.nutritiousValue),
             ]
-        
-        def render(self, renderScreen):            
-            pygame.draw.rect(renderScreen, (0, 255, 0), (self.rect, (FOOD_SIZE, FOOD_SIZE)))            
-            
+
+        def render(self, renderScreen):
+            pygame.draw.rect(renderScreen, (0, 255, 0),
+                             (self.rect, (FOOD_SIZE, FOOD_SIZE)))
 
     class GroundBlock:
         def __init__(self, id, type, rect):
@@ -73,15 +74,15 @@ class Ground:
                 'RECT: ' + str(self.rect) + ' MOUSE: ' +
                 str(pygame.mouse.get_pos()),
                 'FERTILITY: ' + str(self.fertility),
-                
+
                 'FOOD:',
             ]
-            
+
             if self.food == None:
                 info.append('None')
             else:
                 info.extend(self.food.getDebugInfo())
-            
+
             return info
 
     def __init__(self, EVENT_LOOP):
@@ -117,10 +118,10 @@ class Ground:
             if groundBlock.food != None and groundBlock.food.nutritiousValue == 0:
                 groundBlock.food = None
         self.updateFoodList()
-    
+
     def removeFood(self):
         self.foodList = []
-    
+
     def updateFoodList(self):
         updatedFoodList = []
         for i in range(len(self.foodList)):
@@ -129,18 +130,20 @@ class Ground:
         for i in range(len(updatedFoodList)):
             updatedFoodList[i].id = i
         self.foodList = updatedFoodList
-    
+
     def growFood(self):
         fertilityRequired = random.uniform(0.9, 1)
         print(f'*GROWING FOOD FERTILITY_REQUIRED={fertilityRequired}')
         for groundBlock in self.groundBlocksList:
             if groundBlock.fertility > 0 and random.random() > fertilityRequired:
-                self.foodList.append(self.Food(len(self.foodList), groundBlock))
-    
+                self.foodList.append(
+                    self.Food(len(self.foodList), groundBlock))
+
     def searchForFoodScent(self, dian):
         scents = []
         for food in self.foodList:
-            dist = abs(dian.coords[0] - food.rect[0]) + abs(dian.coords[1] - food.rect[1])
+            dist = abs(dian.coords[0] - food.rect[0]) + \
+                abs(dian.coords[1] - food.rect[1])
             if dist < food.scentValue + dian.smellStrength and food.nutritiousValue > 0:
                 scents.append((food.scentValue + dian.smellStrength, food.id))
         scents = sorted(scents)
@@ -151,7 +154,7 @@ class Ground:
     def render(self, renderScreen):
         for groundBlock in self.groundBlocksList:
             groundBlock.render(renderScreen)
-        
+
         for food in self.foodList:
             food.render(renderScreen)
 
