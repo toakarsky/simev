@@ -64,9 +64,24 @@ class Dian:
             return True
         return False
 
+    def drawDebugLine(self, renderScreen, object, color):
+        LINE_WEIGHT = 5
+        ourX = self.coords[0] + self.IDLE_SPRITE.get_width() / 2 - LINE_WEIGHT / 2
+        ourY = self.coords[1] + self.IDLE_SPRITE.get_height() / 2 - LINE_WEIGHT / 2
+        theirX = object.rect[0] + GROUND_BLOCK_SIZE / 2 - LINE_WEIGHT / 2
+        theirY = object.rect[1] + GROUND_BLOCK_SIZE / 2 - LINE_WEIGHT / 2
+        
+        dist = ((abs(ourX - theirX)), (abs(ourY - theirY)))
+        linePoints = (min(ourX, theirX), min(ourY, theirY))
+        pygame.draw.rect(renderScreen, color, ((linePoints[0], ourY), (dist[0], LINE_WEIGHT)))
+        pygame.draw.rect(renderScreen, color, ((theirX - 1, linePoints[1]), (LINE_WEIGHT, dist[1])))
+        
+
     def getDebugInfo(self, renderScreen):
         if self.destination != None:
+            self.drawDebugLine(renderScreen, self.destination, (68, 244, 23))
             pygame.draw.rect(renderScreen, (0, 255, 255), (self.destination.rect, (GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE)))
+        self.drawDebugLine(renderScreen, self.homeGroundBlock, (244, 23, 58))
         pygame.draw.rect(renderScreen, (255, 0, 255), (self.homeGroundBlock.rect, (GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE)))
                 
         return [
