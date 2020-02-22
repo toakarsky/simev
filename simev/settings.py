@@ -1,6 +1,6 @@
 import enum
 
-WINDOW_SIZE = (320, 320)
+WINDOW_SIZE = (800, 800)
 WINDOW_TITLE = 'SimEnv - Simple Evolution Simulation'
 WINDOW_ICON_PATH = 'assets/icons/simenv.png'
 

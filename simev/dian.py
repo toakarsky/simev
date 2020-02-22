@@ -28,18 +28,22 @@ class Dian:
 
         self.state = self.DIAN_STATES.IDLE
         self.homeGroundBlock = homeGroundBlock
+        self.homeGroundBlock.inhabitet = True
 
-        self.coords = (self.homeGroundBlock.rect[1]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
+        self.coords = (self.homeGroundBlock.rect[0]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
         )) / 2, self.homeGroundBlock.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
         print(
-            f'*DIAN_CREATED HOME_ID={self.homeGroundBlock.id} COORDS={self.coords}')
+            f'*DIAN_CREATED HOME_ID={self.homeGroundBlock.id} COORDS={self.coords} TYPE={self.homeGroundBlock.type}')
 
         self.destination = None
         self.destCoords = None
         self.searchingForDestination = False
+    
+    def __del__(self):
+        self.homeGroundBlock.inhabitet = False
 
     def sleep(self):
-        self.coords = (self.homeGroundBlock.rect[1]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
+        self.coords = (self.homeGroundBlock.rect[0]  + (GROUND_BLOCK_SIZE  - self.IDLE_SPRITE.get_width(
         )) / 2, self.homeGroundBlock.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
         self.state = self.DIAN_STATES.SLEEP
         self.destination = None
@@ -51,13 +55,13 @@ class Dian:
         self.searchingForDestination = False
 
     def findDestination(self):
-        self.EVENT_LOOP.loop.append(DIAN_EVENTS_ENUM.NEEDS_DESTINATION)
+        self.EVENT_LOOP.append(DIAN_EVENTS_ENUM.NEEDS_DESTINATION)
         self.searchingForDestination = True
 
     def setDestination(self, destinationGroundBlock):
         self.destination = destinationGroundBlock
         
-        self.destCoords = (self.destination.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_width(
+        self.destCoords = (self.destination.rect[0] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_width(
         )) / 2, self.destination.rect[1] + (GROUND_BLOCK_SIZE - self.IDLE_SPRITE.get_height()) / 2)
 
         self.searchingForDestination = False
@@ -87,7 +91,6 @@ class Dian:
         if self.state == self.DIAN_STATES.SLEEP:
             return
 
-        # print(f'DIAN UPDATE {self.destination} {self.coords} {self.searchingForDestination}')
         if self.searchingForDestination == False and self.destination == None:
             self.findDestination()
         elif self.destination != None:
