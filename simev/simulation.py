@@ -1,6 +1,6 @@
 import pygame
 
-from .settings import WINDOW_SIZE, WINDOW_TITLE, WINDOW_ICON_PATH, FONT_PATH
+from .settings import WINDOW_SIZE, WINDOW_TITLE, WINDOW_ICON_PATH, FONT_PATH, FPS_LIMIT
 from .adharas import Adharas
 
 
@@ -77,10 +77,11 @@ class Simulation:
 
             # flip everything
             pygame.display.update()
-            self.clock.tick(60)
+            self.clock.tick(FPS_LIMIT)
 
     def runMainLoop(self):
         print('*SIMULATION STARTED')
+        paused = False
         self.adharas.startSimulation()
         while self.shutdown == False:
             # looping over every input
@@ -88,9 +89,13 @@ class Simulation:
                 if event.type == pygame.QUIT:
                     print('_EVENT_GOT__ QUIT')
                     self.shutdown = True
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    print('_EVENT_GOT__ PAUSE' if paused == False else '_EVENT_GOT__ UNPAUSE')
+                    paused = paused == False
 
             # calculate everything
-            self.adharas.updateWorld()
+            if paused == False:
+                self.adharas.updateWorld()
 
             # render everything
             self.renderScreen.fill((0, 0, 0))
@@ -98,7 +103,7 @@ class Simulation:
 
             # flip everything
             pygame.display.update()
-            self.clock.tick(60)
+            self.clock.tick(FPS_LIMIT)
 
     def __del__(self):
         print(f'#CLOSING WINDOW__')

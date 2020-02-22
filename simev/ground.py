@@ -7,6 +7,11 @@ from .settings import GROUND_BLOCK_SIZE, GROUND_BLOCK_TYPE_ENUM, GROUND_POSITION
 
 
 class Ground:
+    class Food:
+        def __init__(self, homeGroundBlock):
+            self.scentValue = random.randint(1, 6)
+            self.nutritiousValue = random.randint(1, 6)
+    
     class GroundBlock:
         def __init__(self, id, type, rect):
             self.id = id
@@ -16,6 +21,9 @@ class Ground:
             
             self.inhabitet = False
             self.inhabitable = self.type != GROUND_BLOCK_TYPE_ENUM.MIDDLE_BLOCK
+            
+            self.fertility = 0 if self.inhabitable == True else random.random()
+            self.food = None
 
         def render(self, renderScreen):
             if self.inhabitet:

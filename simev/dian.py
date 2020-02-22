@@ -1,4 +1,5 @@
 import enum
+import random
 
 import pygame
 
@@ -39,6 +40,9 @@ class Dian:
         self.destination = None
         self.destCoords = None
         self.searchingForDestination = False
+        
+        self.smellStrength = random.randint(1, 10)
+        self.foodCollected = 0
     
     def __del__(self):
         self.homeGroundBlock.inhabitet = False
@@ -50,6 +54,8 @@ class Dian:
         self.destination = None
         self.destCoords = None
         self.searchingForDestination = False
+        
+        self.foodCollected = 0
 
     def awake(self):
         self.state = self.DIAN_STATES.IDLE

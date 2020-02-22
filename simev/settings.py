@@ -5,6 +5,7 @@ WINDOW_TITLE = 'SimEnv - Simple Evolution Simulation'
 WINDOW_ICON_PATH = 'assets/icons/simenv.png'
 
 FONT_PATH = 'assets/fonts/cascadia.ttf'
+DEBUG_INFO_FONT_SIZE = 16
 
 GROUND_BLOCK_SIZE = 32
 
@@ -45,10 +46,11 @@ GROUND_TYPE_TO_IMAGE_PATH = {
     GROUND_BLOCK_TYPE_ENUM.MIDDLE_BLOCK: 'assets/sprites/grass/middle.png',
 }
 
+FPS_LIMIT = 60
 TICKS_PER_DAY = 11
 FRAMES_PER_TICK = 30
+STARTING_POPULATATION_SIZE = 11
 
 DIAN_IDLE_IMAGE_PATH = 'assets/sprites/dian/idle.png'
 DIAN_SLEEP_IMAGE_PATH = 'assets/sprites/dian/sleep.png'
-
-DIAN_MOVE_SPEED = 4
+DIAN_MOVE_SPEED = 60 / TICKS_PER_DAY
