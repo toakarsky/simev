@@ -140,7 +140,7 @@ class Ground:
             if groundBlock.fertility > 0:
                 fertileGroundBlocks.append(groundBlock.id)
 
-        for i in range(20):
+        for i in range(50):
             choosenBlock = fertileGroundBlocks.pop(
                 random.randrange(len(fertileGroundBlocks)))
             self.foodList.append(

@@ -129,7 +129,7 @@ class Dian:
             offspringsList.append(self)
             self.foodCollected -= 1
         if self.foodCollected > 0:
-            foodPerChild = (1 + (0.2 * self.movementSpeed) +
+            foodPerChild = (1 + (0.0 * self.movementSpeed) +
                             (self.smellStrength - 5))
             if foodPerChild == 0:
                 offspringsNumber = 0
@@ -153,7 +153,7 @@ class Dian:
                 object.smellStrength -= 1
 
         msSpeedMutates = random.uniform(0, 1)
-        if msSpeedMutates > 0.2:
+        if msSpeedMutates > 0.5:
             mspeedMutationSide = random.uniform(0, 1)
             if mspeedMutationSide > 0.5:
                 object.movementSpeed += 0.25
@@ -166,6 +166,8 @@ class Dian:
         # NOT_RANDOM VERSION
         offspring = Dian(1, self.homeGroundBlock,
                          self.EVENT_LOOP, self.generation + 1)
+        offspring.movementSpeed = self.movementSpeed
+        offspring.smellStrength = self.smellStrength
 
         # Random mutation
         self.mutate(offspring)
