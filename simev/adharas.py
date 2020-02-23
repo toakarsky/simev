@@ -113,11 +113,9 @@ class Adharas:
         self.hoverObjectsList.clear()
         for groundBlock in self.ground.groundBlocksList:
             if groundBlock.collidepoint(pygame.mouse.get_pos()):
-                print(f'__HOVERING GROUNDBLOCK ID={groundBlock.id}')
                 self.hoverObjectsList.append(groundBlock)
         for dian in self.dianPopulation:
             if dian.collidepoint(pygame.mouse.get_pos()):
-                print(f'__HOVERING DIAN ID={dian.id}')
                 self.hoverObjectsList.append(dian)
 
     def updateDianDestination(self, dian):
@@ -151,6 +149,7 @@ class Adharas:
         if self.naturalClock.isNight == False:
             self.ground.update()
 
+        self.ground.updateFoodList()
         for devent in self.DIAN_EVENT_LOOP.get():
             if devent[0] == DIAN_EVENTS_ENUM.NEEDS_DESTINATION:
                 print(f'_DIAN_EVENT NEEDS_DESTINATION DIAN_ID={devent[1]}')

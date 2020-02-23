@@ -117,6 +117,12 @@ class Dian:
         self.searchingForDestination = True
 
     def setDestination(self, destinationGroundBlock):
+        if self.destination != None:
+            if self.destination.food != None:
+                if destinationGroundBlock.food != None:
+                    if self.destination.food.id == destinationGroundBlock.food.id:
+                        return
+        
         self.destination = destinationGroundBlock
         if self.destination.food != None:
             self.state = self.DIAN_STATES.FOLLOWING_FOOD
@@ -161,26 +167,25 @@ class Dian:
     def update(self):
         if self.state == self.DIAN_STATES.SLEEP:
             return
-
-        if self.state == self.DIAN_STATES.IDLE:
-            if self.searchingForDestination == False and self.destination == None:
+        
+        
+        if self.state == self.DIAN_STATES.EATING_FOOD:
+            self.eatFood()
+        elif self.state == self.DIAN_STATES.IDLE or self.state == self.DIAN_STATES.FOLLOWING_FOOD:
+            if self.destination == None:
                 self.findDestination()
             else:
                 self.smellForFood()
-        if self.state == self.DIAN_STATES.IDLE or self.state == self.DIAN_STATES.FOLLOWING_FOOD:
-            if self.destination != None:
                 self.moveTowardsDestination()
 
                 if self.coords == self.destCoords:
                     if self.destination.food != None:
                         self.state = self.DIAN_STATES.EATING_FOOD
                     else:
+                        self.state = self.DIAN_STATES.IDLE
                         self.destination = None
                         self.destCoords = None
-                        self.searchingForDestination = False
-        elif self.state == self.DIAN_STATES.EATING_FOOD:
-            self.eatFood()
-
+                        
     def render(self, renderScreen):
         if self.state == self.DIAN_STATES.SLEEP:
             renderScreen.blit(self.SLEEP_SPRITE, self.coords)

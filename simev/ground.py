@@ -60,11 +60,7 @@ class Ground:
             return False
 
         def render(self, renderScreen):
-            if self.inhabitet:
-                pygame.draw.rect(
-                    renderScreen, (255, 0, 0), (self.rect, (GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE)))
-            else:
-                renderScreen.blit(self.image, self.rect)
+            renderScreen.blit(self.image, self.rect)
 
         def getDebugInfo(self, renderScreen):
             info = [
@@ -142,10 +138,10 @@ class Ground:
     def searchForFoodScent(self, dian):
         scents = []
         for food in self.foodList:
-            dist = abs(dian.coords[0] - food.rect[0]) + \
-                abs(dian.coords[1] - food.rect[1])
-            if dist < food.scentValue + dian.smellStrength and food.nutritiousValue > 0:
-                scents.append((food.scentValue + dian.smellStrength, food.id))
+            dist = (abs(dian.coords[0] - food.rect[0]) / GROUND_BLOCK_SIZE) + \
+                (abs(dian.coords[1] - food.rect[1]) / GROUND_BLOCK_SIZE)
+            if dist <= food.scentValue + dian.smellStrength and food.nutritiousValue > 0:
+                scents.append(((food.scentValue + dian.smellStrength) - dist, food.id))
         scents = sorted(scents)
         if scents != []:
             return self.foodList[scents[-1][1]]
