@@ -4,7 +4,7 @@ import random
 import pygame
 
 from .settings import GROUND_BLOCK_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM
-from .settings import DIAN_IDLE_IMAGE_PATH, DIAN_SLEEP_IMAGE_PATH, DIAN_MOVE_SPEED
+from .settings import DIAN_IDLE_IMAGE_PATH, DIAN_SLEEP_IMAGE_PATH, DIAN_MOVE_SPEED, REPRODUCTION_SUCCESS_LIMIT
 
 
 class DIAN_EVENTS_ENUM(enum.Enum):
@@ -49,7 +49,8 @@ class Dian:
         self.searchingForDestination = False
 
         self.generation = generation
-        self.smellStrength = random.randint(1, 10)
+        self.movementSpeed = 1
+        self.smellStrength = 5
         self.foodCollected = 0
 
     def __del__(self):
@@ -80,6 +81,14 @@ class Dian:
         pygame.draw.rect(renderScreen, color,
                          ((theirX - 1, linePoints[1]), (LINE_WEIGHT, dist[1])))
 
+    def getStatisticData(self):
+        statisticData = {
+            'GENERATION': self.generation,
+            'MOVEMENT_SPEED': self.movementSpeed,
+            'SMELL_STRENTGH': self.smellStrength,
+        }
+        return statisticData
+
     def getDebugInfo(self, renderScreen):
         if self.destination != None:
             self.drawDebugLine(renderScreen, self.destination, (68, 244, 23))
@@ -95,6 +104,7 @@ class Dian:
             'COORDS: ' + str((int(self.coords[0]), int(self.coords[1]))
                              ) + ' MOUSE: ' + str(pygame.mouse.get_pos()),
             'STATE: ' + str(self.state),
+            'MOVEMENT_SPEED: ' + str(self.movementSpeed),
             'SMELL_STRENTGH: ' + str(self.smellStrength),
         ]
 
@@ -112,6 +122,56 @@ class Dian:
 
         self.foodCollected = 0
 
+    def generateOffsprings(self):
+        offspringsList = []
+
+        if self.foodCollected > 0:
+            offspringsList.append(self)
+            self.foodCollected -= 1
+        if self.foodCollected > 0:
+            foodPerChild = (1 + (0.2 * self.movementSpeed) +
+                            (self.smellStrength - 5))
+            if foodPerChild == 0:
+                offspringsNumber = 0
+            else:
+                offspringsNumber = int((self.foodCollected) / foodPerChild)
+        else:
+            offspringsNumber = 0
+
+        for k in range(offspringsNumber):
+            offspringsList.append(self.reproduce())
+
+        return offspringsList
+
+    def mutate(self, object):
+        smellMutates = random.uniform(0, 1)
+        if smellMutates > 0.5:
+            smellMutationSide = random.uniform(0, 1)
+            if smellMutationSide > 0.5:
+                object.smellStrength += 1
+            else:
+                object.smellStrength -= 1
+
+        msSpeedMutates = random.uniform(0, 1)
+        if msSpeedMutates > 0.2:
+            mspeedMutationSide = random.uniform(0, 1)
+            if mspeedMutationSide > 0.5:
+                object.movementSpeed += 0.25
+            else:
+                object.movementSpeed -= 0.25
+
+    def reproduce(self):
+        # RANDOM VERSION
+        # reproduceSuccess = random.uniform(0, 5) + random.uniform(0, 0.05) * self.foodCollected - - random.uniform(0, 0.05) * self.smellStrength -
+        # NOT_RANDOM VERSION
+        offspring = Dian(1, self.homeGroundBlock,
+                         self.EVENT_LOOP, self.generation + 1)
+
+        # Random mutation
+        self.mutate(offspring)
+
+        return offspring
+
     def findDestination(self):
         self.EVENT_LOOP.append((DIAN_EVENTS_ENUM.NEEDS_DESTINATION, self.id))
         self.searchingForDestination = True
@@ -122,7 +182,7 @@ class Dian:
                 if destinationGroundBlock.food != None:
                     if self.destination.food.id == destinationGroundBlock.food.id:
                         return
-        
+
         self.destination = destinationGroundBlock
         if self.destination.food != None:
             self.state = self.DIAN_STATES.FOLLOWING_FOOD
@@ -140,17 +200,17 @@ class Dian:
                 newCoordsX = self.destCoords[0]
             else:
                 if newCoordsX > self.destCoords[0]:
-                    newCoordsX -= DIAN_MOVE_SPEED
+                    newCoordsX -= DIAN_MOVE_SPEED * self.movementSpeed
                 else:
-                    newCoordsX += DIAN_MOVE_SPEED
+                    newCoordsX += DIAN_MOVE_SPEED * self.movementSpeed
         else:
             if abs(self.coords[1] - self.destCoords[1]) <= DIAN_MOVE_SPEED:
                 newCoordsY = self.destCoords[1]
             else:
                 if newCoordsY > self.destCoords[1]:
-                    newCoordsY -= DIAN_MOVE_SPEED
+                    newCoordsY -= DIAN_MOVE_SPEED * self.movementSpeed
                 else:
-                    newCoordsY += DIAN_MOVE_SPEED
+                    newCoordsY += DIAN_MOVE_SPEED * self.movementSpeed
         self.coords = (newCoordsX, newCoordsY)
 
     def smellForFood(self):
@@ -167,8 +227,7 @@ class Dian:
     def update(self):
         if self.state == self.DIAN_STATES.SLEEP:
             return
-        
-        
+
         if self.state == self.DIAN_STATES.EATING_FOOD:
             self.eatFood()
         elif self.state == self.DIAN_STATES.IDLE or self.state == self.DIAN_STATES.FOLLOWING_FOOD:
@@ -185,7 +244,7 @@ class Dian:
                         self.state = self.DIAN_STATES.IDLE
                         self.destination = None
                         self.destCoords = None
-                        
+
     def render(self, renderScreen):
         if self.state == self.DIAN_STATES.SLEEP:
             renderScreen.blit(self.SLEEP_SPRITE, self.coords)

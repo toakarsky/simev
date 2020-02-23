@@ -13,8 +13,8 @@ class Ground:
             self.homeGroundBlock = homeGroundBlock
             self.homeGroundBlock.food = self
 
-            self.scentValue = random.randint(1, 6)
-            self.nutritiousValue = random.randint(1, 6)
+            self.scentValue = 1
+            self.nutritiousValue = 1
 
             MARGIN = (GROUND_BLOCK_SIZE - FOOD_SIZE) / 2
             self.rect = (
@@ -128,12 +128,25 @@ class Ground:
         self.foodList = updatedFoodList
 
     def growFood(self):
-        fertilityRequired = random.uniform(0.9, 1)
-        print(f'*GROWING FOOD FERTILITY_REQUIRED={fertilityRequired}')
+        # OLD METHOD
+        # fertilityRequired = random.uniform(0.5, 1)
+        # print(f'*GROWING FOOD FERTILITY_REQUIRED={fertilityRequired}')
+        # for groundBlock in self.groundBlocksList:
+        #     if groundBlock.fertility > 0 and random.random() > fertilityRequired:
+        #         self.foodList.append(
+        #             self.Food(len(self.foodList), groundBlock))
+        fertileGroundBlocks = []
         for groundBlock in self.groundBlocksList:
-            if groundBlock.fertility > 0 and random.random() > fertilityRequired:
-                self.foodList.append(
-                    self.Food(len(self.foodList), groundBlock))
+            if groundBlock.fertility > 0:
+                fertileGroundBlocks.append(groundBlock.id)
+
+        for i in range(20):
+            choosenBlock = fertileGroundBlocks.pop(
+                random.randrange(len(fertileGroundBlocks)))
+            self.foodList.append(
+                self.Food(len(self.foodList),
+                          self.groundBlocksList[choosenBlock])
+            )
 
     def searchForFoodScent(self, dian):
         scents = []
@@ -141,7 +154,8 @@ class Ground:
             dist = (abs(dian.coords[0] - food.rect[0]) / GROUND_BLOCK_SIZE) + \
                 (abs(dian.coords[1] - food.rect[1]) / GROUND_BLOCK_SIZE)
             if dist <= food.scentValue + dian.smellStrength and food.nutritiousValue > 0:
-                scents.append(((food.scentValue + dian.smellStrength) - dist, food.id))
+                scents.append(
+                    ((food.scentValue + dian.smellStrength) - dist, food.id))
         scents = sorted(scents)
         if scents != []:
             return self.foodList[scents[-1][1]]
