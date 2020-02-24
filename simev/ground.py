@@ -3,7 +3,8 @@ import random
 import pygame
 
 from .settings import WINDOW_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM
-from .settings import GROUND_BLOCK_SIZE, GROUND_BLOCK_TYPE_ENUM, GROUND_POSITION_TO_TYPE, GROUND_TYPE_TO_IMAGE_PATH, FOOD_SIZE
+from .settings import GROUND_BLOCK_SIZE, GROUND_BLOCK_TYPE_ENUM, GROUND_POSITION_TO_TYPE, GROUND_TYPE_TO_IMAGE_PATH
+from .settings import FOOD_IMAGE_PATH, MAX_STABLE_POPULATION_SIZE
 
 
 class Ground:
@@ -15,10 +16,11 @@ class Ground:
 
             self.scentValue = 1
             self.nutritiousValue = 1
-
-            MARGIN = (GROUND_BLOCK_SIZE - FOOD_SIZE) / 2
+            
+            self.image = pygame.image.load(FOOD_IMAGE_PATH).convert_alpha()
+            MARGIN = ((GROUND_BLOCK_SIZE - self.image.get_width()),(GROUND_BLOCK_SIZE - self.image.get_height())) 
             self.rect = (
-                self.homeGroundBlock.rect[0] + MARGIN, self.homeGroundBlock.rect[1] + MARGIN)
+                self.homeGroundBlock.rect[0] + MARGIN[0] / 2, self.homeGroundBlock.rect[1] + MARGIN[1] / 2)
 
         def __del__(self):
             self.homeGroundBlock.food = None
@@ -30,8 +32,7 @@ class Ground:
             ]
 
         def render(self, renderScreen):
-            pygame.draw.rect(renderScreen, (0, 255, 0),
-                             (self.rect, (FOOD_SIZE, FOOD_SIZE)))
+            renderScreen.blit(self.image, self.rect)
 
     class GroundBlock:
         def __init__(self, id, type, rect):
@@ -63,6 +64,11 @@ class Ground:
             renderScreen.blit(self.image, self.rect)
 
         def getDebugInfo(self, renderScreen):
+            boundsSurface = pygame.Surface((GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE))
+            boundsSurface.set_alpha(64)
+            pygame.draw.rect(boundsSurface, (23, 68, 200), ((0, 0), (GROUND_BLOCK_SIZE, GROUND_BLOCK_SIZE)))
+            renderScreen.blit(boundsSurface, self.rect)
+            
             info = [
                 'GROUND ID: ' + str(self.id),
                 'INHABITABLE: ' + str(self.inhabitable) +
@@ -140,7 +146,7 @@ class Ground:
             if groundBlock.fertility > 0:
                 fertileGroundBlocks.append(groundBlock.id)
 
-        for i in range(50):
+        for i in range(MAX_STABLE_POPULATION_SIZE):
             choosenBlock = fertileGroundBlocks.pop(
                 random.randrange(len(fertileGroundBlocks)))
             self.foodList.append(

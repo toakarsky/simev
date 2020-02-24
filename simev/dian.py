@@ -3,8 +3,8 @@ import random
 
 import pygame
 
-from .settings import GROUND_BLOCK_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM
-from .settings import DIAN_IDLE_IMAGE_PATH, DIAN_SLEEP_IMAGE_PATH, DIAN_MOVE_SPEED, REPRODUCTION_SUCCESS_LIMIT
+from .settings import GROUND_BLOCK_SIZE, HOVER_BY_CLASS_WEIGHT_ENUM, WINDOW_SIZE
+from .settings import DIAN_IDLE_IMAGE_PATH, DIAN_SLEEP_IMAGE_PATH, DIAN_MOVE_SPEED
 
 
 class DIAN_EVENTS_ENUM(enum.Enum):
@@ -76,10 +76,14 @@ class Dian:
 
         dist = ((abs(ourX - theirX)), (abs(ourY - theirY)))
         linePoints = (min(ourX, theirX), min(ourY, theirY))
-        pygame.draw.rect(renderScreen, color,
+        
+        debugSurface = pygame.Surface(WINDOW_SIZE, pygame.SRCALPHA, 32).convert_alpha()
+        pygame.draw.rect(debugSurface, color,
                          ((linePoints[0], ourY), (dist[0], LINE_WEIGHT)))
-        pygame.draw.rect(renderScreen, color,
+        pygame.draw.rect(debugSurface, color,
                          ((theirX - 1, linePoints[1]), (LINE_WEIGHT, dist[1])))
+        debugSurface.set_alpha(64)
+        renderScreen.blit(debugSurface, (0, 0))
 
     def getStatisticData(self):
         statisticData = {
@@ -125,12 +129,11 @@ class Dian:
     def generateOffsprings(self):
         offspringsList = []
 
-        if self.foodCollected > 0:
+        if self.foodCollected > self.movementSpeed:
             offspringsList.append(self)
-            self.foodCollected -= 1
+            self.foodCollected -= (self.movementSpeed)
         if self.foodCollected > 0:
-            foodPerChild = (1 + (0.0 * self.movementSpeed) +
-                            (self.smellStrength - 5))
+            foodPerChild = 1
             if foodPerChild == 0:
                 offspringsNumber = 0
             else:
@@ -144,21 +147,21 @@ class Dian:
         return offspringsList
 
     def mutate(self, object):
-        smellMutates = random.uniform(0, 1)
-        if smellMutates > 0.5:
-            smellMutationSide = random.uniform(0, 1)
-            if smellMutationSide > 0.5:
-                object.smellStrength += 1
-            else:
-                object.smellStrength -= 1
+        # smellMutates = random.uniform(0, 1)
+        # if smellMutates > 0.5:
+        #     smellMutationSide = random.uniform(0, 1)
+        #     if smellMutationSide > 0.5:
+        #         object.smellStrength += 1
+        #     else:
+        #         object.smellStrength -= 1
 
         msSpeedMutates = random.uniform(0, 1)
         if msSpeedMutates > 0.5:
             mspeedMutationSide = random.uniform(0, 1)
             if mspeedMutationSide > 0.5:
-                object.movementSpeed += 0.25
+                object.movementSpeed /= 2
             else:
-                object.movementSpeed -= 0.25
+                object.movementSpeed *= 2
 
     def reproduce(self):
         # RANDOM VERSION
